@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Add Questions</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5fb;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #c026d3, #7c3aed);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #333;
+        }
+
+        .header p {
+            color: #777;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+        }
+
+        .question-number {
+            color: #7c3aed;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .correct-answer {
+            margin-top: 10px;
+        }
+
+        .correct-answer select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button,
+        .btn {
+            padding: 12px 22px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .back-btn {
+            background: #eee;
+            color: #333;
+        }
+
+        .preview-btn {
+            background: linear-gradient(135deg, #c026d3, #7c3aed);
+            color: white;
+        }
+
+        @media(max-width: 650px) {
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <h2>🎓 Tutor Panel</h2>
+
+    <div>
+
+        <a href="{% url 'tutor_dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>Add Questions</h1>
+
+        <p>
+            {{ mock_test.title }}
+            — {{ mock_test.total_questions }} Questions
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        {% for i in question_numbers %}
+
+        <div class="question-card">
+
+            <div class="question-number">
+                Question {{ i }}
+            </div>
+
+
+            <label>
+                Question
+            </label>
+
+            <textarea
+                name="question_{{ i }}"
+                placeholder="Enter question..."
+                required
+            ></textarea>
+
+
+            <div class="options">
+
+                <div>
+
+                    <label>Option A</label>
+
+                    <input
+                        type="text"
+                        name="option_a_{{ i }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>Option B</label>
+
+                    <input
+                        type="text"
+                        name="option_b_{{ i }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>Option C</label>
+
+                    <input
+                        type="text"
+                        name="option_c_{{ i }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>Option D</label>
+
+                    <input
+                        type="text"
+                        name="option_d_{{ i }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="correct-answer">
+
+                <label>
+                    Correct Answer
+                </label>
+
+                <select name="correct_answer_{{ i }}">
+    <option value="option_a">Option A</option>
+    <option value="option_b">Option B</option>
+    <option value="option_c">Option C</option>
+    <option value="option_d">Option D</option>
+</select>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+        <div class="buttons">
+
+            <a
+                href="{% url 'tutor_dashboard' %}"
+                class="btn back-btn"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="preview-btn"
+            >
+                Save Questions & Preview →
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

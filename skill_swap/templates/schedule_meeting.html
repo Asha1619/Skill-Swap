@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Schedule Meeting | Skill Swap</title>
+
+    <style>
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* =========================================================
+           BODY
+        ========================================================= */
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #333;
+            min-height: 100vh;
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .navbar {
+            min-height: 70px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+
+        .nav-link {
+            text-decoration: none;
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+
+        .nav-link:hover {
+            color: #4f46e5;
+        }
+
+
+        .nav-link.active {
+            color: #4f46e5;
+            font-weight: bold;
+        }
+
+
+        .notification-badge {
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+
+
+        /* =========================================================
+           MAIN CONTAINER
+        ========================================================= */
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 45px auto;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+
+        .page-header h1 {
+            font-size: 30px;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+
+        .page-header p {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           MAIN CARD
+        ========================================================= */
+
+        .schedule-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+        }
+
+
+        /* =========================================================
+           USER INFORMATION
+        ========================================================= */
+
+        .swap-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e5e7eb;
+        }
+
+
+        .swap-info h3 {
+            color: #222;
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+
+
+        .swap-users {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+
+        .user-name {
+            background: #eef2ff;
+            color: #4f46e5;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+
+        .arrow {
+            color: #888;
+            font-size: 18px;
+        }
+
+
+        .skill-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+
+        .skill-info strong {
+            color: #4f46e5;
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================= */
+
+        .form-title {
+            font-size: 20px;
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+
+        .required {
+            color: #ef4444;
+        }
+
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            padding: 12px 13px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            outline: none;
+            transition: 0.3s;
+            background: white;
+        }
+
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+
+        .form-help {
+            display: block;
+            margin-top: 6px;
+            color: #999;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           DATE / TIME GRID
+        ========================================================= */
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+
+        /* =========================================================
+           MEETING LINK
+        ========================================================= */
+
+        .link-input {
+            position: relative;
+        }
+
+
+        .link-input input {
+            padding-left: 40px;
+        }
+
+
+        .link-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+        }
+
+
+        /* =========================================================
+           BUTTONS
+        ========================================================= */
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+
+        .save-btn {
+            border: none;
+            background: #4f46e5;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+
+        .save-btn:hover {
+            background: #4338ca;
+        }
+
+
+        .cancel-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #f3f4f6;
+            color: #555;
+            padding: 12px 24px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+
+        .cancel-btn:hover {
+            background: #e5e7eb;
+        }
+
+
+        /* =========================================================
+           INFORMATION BOX
+        ========================================================= */
+
+        .info-box {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            color: #1e40af;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 15px 25px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+
+            .container {
+                width: 94%;
+                margin-top: 30px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 15px;
+            }
+
+
+            .logo {
+                font-size: 21px;
+            }
+
+
+            .nav-links {
+                gap: 10px;
+            }
+
+
+            .nav-link {
+                font-size: 12px;
+            }
+
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+
+            .schedule-card {
+                padding: 20px;
+            }
+
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+
+            .save-btn,
+            .cancel-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+        }
+
+
+        @media (max-width: 400px) {
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+
+            .schedule-card {
+                padding: 16px;
+            }
+
+
+            .swap-info {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================= -->
+
+    <nav class="navbar">
+
+
+        <div class="logo">
+            🔄 Skill Swap
+        </div>
+
+
+        <div class="nav-links">
+
+
+            <a href="{% url 'dashboard' %}"
+               class="nav-link">
+
+                🏠 Dashboard
+
+            </a>
+
+
+            <a href="{% url 'view_profile' user.id %}"
+               class="nav-link">
+
+                👤 Profile
+
+            </a>
+
+
+            <a href="{% url 'swap_requests' %}"
+               class="nav-link active">
+
+                🔄 Swap Requests
+
+                {% if pending_requests_count > 0 %}
+
+                    <span class="notification-badge">
+
+                        {{ pending_requests_count }}
+
+                    </span>
+
+                {% endif %}
+
+            </a>
+
+
+            <a href="{% url 'logout' %}"
+               class="nav-link">
+
+                🚪 Logout
+
+            </a>
+
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================================================
+         MAIN CONTAINER
+    ========================================================= -->
+
+    <div class="container">
+
+
+        <!-- =====================================================
+             PAGE HEADER
+        ===================================================== -->
+
+        <div class="page-header">
+
+            {% if meeting %}
+
+                <h1>
+                    📅 Reschedule Meeting
+                </h1>
+
+                <p>
+                    Update the meeting details for your skill swap.
+                </p>
+
+            {% else %}
+
+                <h1>
+                    📅 Schedule Meeting
+                </h1>
+
+                <p>
+                    Choose a convenient date and time for your skill
+                    exchange meeting.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- =====================================================
+             MAIN CARD
+        ===================================================== -->
+
+        <div class="schedule-card">
+
+
+            <!-- =================================================
+                 SWAP INFORMATION
+            ================================================= -->
+
+            <div class="swap-info">
+
+
+                <h3>
+                    🔄 Skill Swap Details
+                </h3>
+
+
+                <div class="swap-users">
+
+
+                    <!-- FROM USER -->
+
+                    <span class="user-name">
+
+                        👤
+                        {{ swap_request.from_user.full_name|default:swap_request.from_user.username }}
+
+                    </span>
+
+
+                    <span class="arrow">
+                        ↔
+                    </span>
+
+
+                    <!-- TO USER -->
+
+                    <span class="user-name">
+
+                        👤
+                        {{ swap_request.to_user.full_name|default:swap_request.to_user.username }}
+
+                    </span>
+
+
+                </div>
+
+
+                <div class="skill-info">
+
+                    Skill:
+
+                    <strong>
+                        {{ swap_request.skill_to_learn.name }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORM TITLE
+            ================================================= -->
+
+            <h2 class="form-title">
+
+                {% if meeting %}
+
+                    Update Meeting Details
+
+                {% else %}
+
+                    Meeting Details
+
+                {% endif %}
+
+            </h2>
+
+
+
+            <!-- =================================================
+                 FORM
+            ================================================= -->
+
+            <form method="post">
+
+                {% csrf_token %}
+
+
+
+                <!-- =================================================
+                     DATE
+                ================================================= -->
+
+                <div class="form-group">
+
+                    <label for="meeting_date">
+
+                        Meeting Date
+                        <span class="required">*</span>
+
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="meeting_date"
+                        name="meeting_date"
+                        value="{% if meeting %}{{ meeting.meeting_date|date:'Y-m-d' }}{% endif %}"
+                        required
+                    >
+
+
+                    <span class="form-help">
+
+                        Select the date when both users can attend.
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TIME
+                ================================================= -->
+
+                <div class="form-row">
+
+
+                    <!-- START TIME -->
+
+                    <div class="form-group">
+
+                        <label for="start_time">
+
+                            Start Time
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <input
+                            type="time"
+                            id="start_time"
+                            name="start_time"
+                            value="{% if meeting %}{{ meeting.start_time|time:'H:i' }}{% endif %}"
+                            required
+                        >
+
+
+                    </div>
+
+
+
+                    <!-- END TIME -->
+
+                    <div class="form-group">
+
+                        <label for="end_time">
+
+                            End Time
+                            <span class="required">*</span>
+
+                        </label>
+
+
+                        <input
+                            type="time"
+                            id="end_time"
+                            name="end_time"
+                            value="{% if meeting %}{{ meeting.end_time|time:'H:i' }}{% endif %}"
+                            required
+                        >
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     MEETING LINK
+                ================================================= -->
+
+                <div class="form-group">
+
+
+                    <label for="meeting_link">
+
+                        Meeting Link
+                        <span class="required">*</span>
+
+                    </label>
+
+
+                    <div class="link-input">
+
+
+                        <span class="link-icon">
+                            🔗
+                        </span>
+
+
+                        <input
+                            type="url"
+                            id="meeting_link"
+                            name="meeting_link"
+                            placeholder="https://meet.google.com/..."
+                            value="{% if meeting %}{{ meeting.meeting_link }}{% endif %}"
+                            required
+                        >
+
+
+                    </div>
+
+
+                    <span class="form-help">
+
+                        Paste your Google Meet, Zoom, Microsoft Teams,
+                        or other online meeting link.
+
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     NOTES
+                ================================================= -->
+
+                <div class="form-group">
+
+
+                    <label for="notes">
+
+                        Meeting Notes
+
+                    </label>
+
+
+                    <textarea
+                        id="notes"
+                        name="notes"
+                        placeholder="Add any additional information for the meeting..."
+                    >{% if meeting %}{{ meeting.notes }}{% endif %}</textarea>
+
+
+                    <span class="form-help">
+
+                        Example: "We will start with Python basics
+                        and then practice Django."
+
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     BUTTONS
+                ================================================= -->
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="submit"
+                        class="save-btn"
+                    >
+
+                        {% if meeting %}
+
+                            ✓ Update Meeting
+
+                        {% else %}
+
+                            📅 Schedule Meeting
+
+                        {% endif %}
+
+                    </button>
+
+
+                    <a
+                        href="{% url 'swap_requests' %}"
+                        class="cancel-btn"
+                    >
+
+                        Cancel
+
+                    </a>
+
+
+                </div>
+
+
+            </form>
+
+
+
+            <!-- =================================================
+                 INFORMATION BOX
+            ================================================= -->
+
+            <div class="info-box">
+
+                💡 <strong>Tip:</strong>
+
+                Make sure both users are available at the selected
+                date and time. You can use a Google Meet or Zoom link
+                so both participants can easily join the meeting.
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================================================
+         SIMPLE VALIDATION
+    ========================================================= -->
+
+    <script>
+
+        const form = document.querySelector("form");
+
+        form.addEventListener("submit", function(event) {
+
+            const startTime =
+                document.getElementById("start_time").value;
+
+            const endTime =
+                document.getElementById("end_time").value;
+
+            if (startTime && endTime && startTime >= endTime) {
+
+                event.preventDefault();
+
+                alert("End time must be later than start time.");
+
+            }
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>

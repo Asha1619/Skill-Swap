@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Profile - Skill Swap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar-brand span {
+            font-weight: normal;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-links .logout {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 20px;
+            border-radius: 6px;
+        }
+
+        .nav-links .logout:hover {
+            background: #e74c3c;
+        }
+
+        .nav-links .active {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 15px 5px 10px;
+            border-radius: 25px;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-header h2 {
+            color: #333;
+            font-size: 22px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-group .readonly {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .skills-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .skills-section h3 {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .skill-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .skill-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .skill-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .skill-input-group .btn-add {
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .skill-input-group .btn-add:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+
+        .skill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .skill-teach {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .skill-learn {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        .skill-tag .remove-btn {
+            cursor: pointer;
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0 4px;
+            transition: transform 0.2s ease;
+            background: none;
+            border: none;
+        }
+
+        .skill-tag .remove-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .empty-skills {
+            color: #999;
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .view-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .skill-input-group {
+                flex-direction: column;
+            }
+
+            .skill-input-group input {
+                min-width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            Skill <span>Swap</span>
+        </div>
+        <div class="nav-links">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'profile' %}" class="active">My Profile</a>
+            <div class="user-badge">
+                <div class="user-avatar-small">
+                    {{ user.full_name|slice:":1"|upper|default:user.username|slice:":1"|upper }}
+                </div>
+                <span>{{ user.full_name|default:user.username }}</span>
+            </div>
+            <a href="{% url 'logout' %}" class="logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="card">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if request.GET.edit %}
+
+                <div class="card-header">
+                    <h2>✏️ Edit Profile</h2>
+                    <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+
+                <form method="POST" id="profileForm">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="full_name" value="{{ user.full_name }}" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="location" value="{{ user.location }}" placeholder="e.g., Palakkad, Kerala">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea name="bio" placeholder="Tell others about yourself...">{{ user.bio }}</textarea>
+                    </div>
+
+                    <!-- Skills I Can Teach -->
+                    <div class="skills-section">
+                        <h3>📚 Skills I Can Teach</h3>
+                        
+                        <div class="skill-input-group">
+                            <input type="text" id="teachSkillInput" placeholder="Enter a skill you can teach...">
+                            <button type="button" class="btn-add" onclick="addTeachSkill()">+ Add Skill</button>
+                        </div>
+
+                        <div class="skill-tags" id="teachSkillsContainer">
+                            {% for item in teaching_skills %}
+                                <span class="skill-tag skill-teach" data-skill-id="{{ item.skill.id }}">
+                                    {{ item.skill.name }}
+                                    <button type="button" class="remove-btn" onclick="removeTeachSkill(this)">✕</button>
+                                    <input type="hidden" name="teach_skills" value="{{ item.skill.id }}">
+                                </span>
+                            {% empty %}
+                                <span class="empty-skills">No teaching skills added. Add some above!</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Skills I Want to Learn -->
+                    <div class="skills-section">
+                        <h3>🎯 Skills I Want to Learn</h3>
+                        
+                        <div class="skill-input-group">
+                            <input type="text" id="learnSkillInput" placeholder="Enter a skill you want to learn...">
+                            <button type="button" class="btn-add" onclick="addLearnSkill()">+ Add Skill</button>
+                        </div>
+
+                        <div class="skill-tags" id="learnSkillsContainer">
+                            {% for item in learning_skills %}
+                                <span class="skill-tag skill-learn" data-skill-id="{{ item.skill.id }}">
+                                    {{ item.skill.name }}
+                                    <button type="button" class="remove-btn" onclick="removeLearnSkill(this)">✕</button>
+                                    <input type="hidden" name="learn_skills" value="{{ item.skill.id }}">
+                                </span>
+                            {% empty %}
+                                <span class="empty-skills">No learning skills added. Add some above!</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="removed_teach_skills" id="removedTeachSkills" value="">
+                    <input type="hidden" name="removed_learn_skills" id="removedLearnSkills" value="">
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success">💾 Save Changes</button>
+                        <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+                </form>
+
+            {% else %}
+
+                <div class="card-header">
+                    <h2>👤 My Profile</h2>
+                    <a href="?edit=true" class="btn btn-primary">✏️ Edit Profile</a>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" class="readonly" value="{{ user.full_name|default:"Not set" }}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" class="readonly" value="{{ user.location|default:"Not set" }}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea class="readonly" readonly>{{ user.bio|default:"No bio yet" }}</textarea>
+                </div>
+
+                <div class="skills-section">
+                    <h3>📚 Skills I Can Teach</h3>
+                    <div class="view-skills">
+                        {% for item in teaching_skills %}
+                            <span class="skill-tag skill-teach">{{ item.skill.name }}</span>
+                        {% empty %}
+                            <span class="empty-skills">No teaching skills added.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="skills-section">
+                    <h3>🎯 Skills I Want to Learn</h3>
+                    <div class="view-skills">
+                        {% for item in learning_skills %}
+                            <span class="skill-tag skill-learn">{{ item.skill.name }}</span>
+                        {% empty %}
+                            <span class="empty-skills">No learning skills added.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <script>
+        let removedTeachSkills = [];
+        let removedLearnSkills = [];
+
+        function addTeachSkill() {
+            const input = document.getElementById('teachSkillInput');
+            const skillName = input.value.trim();
+            
+            if (skillName === '') {
+                alert('Please enter a skill name');
+                return;
+            }
+
+            const container = document.getElementById('teachSkillsContainer');
+            const existingSkills = container.querySelectorAll('.skill-tag');
+            for (let skill of existingSkills) {
+                const text = skill.textContent.replace('✕', '').trim();
+                if (text === skillName) {
+                    alert('This skill is already added!');
+                    return;
+                }
+            }
+
+            const tag = document.createElement('span');
+            tag.className = 'skill-tag skill-teach';
+            tag.innerHTML = `
+                ${skillName}
+                <button type="button" class="remove-btn" onclick="removeTeachSkill(this)">✕</button>
+                <input type="hidden" name="teach_skills" value="${skillName}">
+            `;
+
+            const emptyMsg = container.querySelector('.empty-skills');
+            if (emptyMsg) {
+                container.innerHTML = '';
+            }
+
+            container.appendChild(tag);
+            input.value = '';
+            input.focus();
+        }
+
+        function removeTeachSkill(element) {
+            const tag = element.closest('.skill-tag');
+            const skillId = tag.dataset.skillId;
+            
+            if (skillId) {
+                removedTeachSkills.push(parseInt(skillId));
+                document.getElementById('removedTeachSkills').value = removedTeachSkills.join(',');
+            }
+            
+            tag.remove();
+            
+            const container = document.getElementById('teachSkillsContainer');
+            if (container.children.length === 0) {
+                container.innerHTML = '<span class="empty-skills">No teaching skills added. Add some above!</span>';
+            }
+        }
+
+        function addLearnSkill() {
+            const input = document.getElementById('learnSkillInput');
+            const skillName = input.value.trim();
+            
+            if (skillName === '') {
+                alert('Please enter a skill name');
+                return;
+            }
+
+            const container = document.getElementById('learnSkillsContainer');
+            const existingSkills = container.querySelectorAll('.skill-tag');
+            for (let skill of existingSkills) {
+                const text = skill.textContent.replace('✕', '').trim();
+                if (text === skillName) {
+                    alert('This skill is already added!');
+                    return;
+                }
+            }
+
+            const tag = document.createElement('span');
+            tag.className = 'skill-tag skill-learn';
+            tag.innerHTML = `
+                ${skillName}
+                <button type="button" class="remove-btn" onclick="removeLearnSkill(this)">✕</button>
+                <input type="hidden" name="learn_skills" value="${skillName}">
+            `;
+
+            const emptyMsg = container.querySelector('.empty-skills');
+            if (emptyMsg) {
+                container.innerHTML = '';
+            }
+
+            container.appendChild(tag);
+            input.value = '';
+            input.focus();
+        }
+
+        function removeLearnSkill(element) {
+            const tag = element.closest('.skill-tag');
+            const skillId = tag.dataset.skillId;
+            
+            if (skillId) {
+                removedLearnSkills.push(parseInt(skillId));
+                document.getElementById('removedLearnSkills').value = removedLearnSkills.join(',');
+            }
+            
+            tag.remove();
+            
+            const container = document.getElementById('learnSkillsContainer');
+            if (container.children.length === 0) {
+                container.innerHTML = '<span class="empty-skills">No learning skills added. Add some above!</span>';
+            }
+        }
+
+        // Add skill on Enter key press
+        document.getElementById('teachSkillInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTeachSkill();
+            }
+        });
+
+        document.getElementById('learnSkillInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addLearnSkill();
+            }
+        });
+
+        // Auto-hide messages after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 3000);
+            });
+        });
+    </script>
+
+</body>
+
+</html>

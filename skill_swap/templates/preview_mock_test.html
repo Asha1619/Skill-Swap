@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Preview Mock Test</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5fb;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #c026d3, #7c3aed);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .test-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+        }
+
+        .test-header h1 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .description {
+            color: #666;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .detail {
+            background: #f7f5fb;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .detail strong {
+            display: block;
+            color: #7c3aed;
+            font-size: 18px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+        }
+
+        .question-title {
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 12px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .correct {
+            border: 2px solid #22c55e;
+            background: #f0fdf4;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            padding: 13px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .edit-btn {
+            background: #eee;
+            color: #333;
+        }
+
+        .publish-btn {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: white;
+        }
+
+        @media(max-width: 700px) {
+
+            .details {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .navbar {
+                padding: 15px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <h2>🎓 Tutor Panel</h2>
+
+    <div>
+
+        <a href="{% url 'tutor_dashboard' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <div class="test-header">
+
+        <h1>{{ mock_test.title }}</h1>
+
+        <p class="description">
+            {{ mock_test.description }}
+        </p>
+
+
+        <div class="details">
+
+            <div class="detail">
+
+                <strong>
+                    {{ mock_test.total_questions }}
+                </strong>
+
+                Questions
+
+            </div>
+
+
+            <div class="detail">
+
+                <strong>
+                    {{ mock_test.duration_minutes }}
+                </strong>
+
+                Minutes
+
+            </div>
+
+
+            <div class="detail">
+
+                <strong>
+                    {{ mock_test.marks_per_question }}
+                </strong>
+
+                Marks
+
+            </div>
+
+
+            <div class="detail">
+
+                <strong>
+                    {{ mock_test.passing_score }}%
+                </strong>
+
+                Pass Score
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% for question in questions %}
+
+    <div class="question-card">
+
+        <div class="question-title">
+
+            {{ forloop.counter }}.
+            {{ question.question }}
+
+        </div>
+
+
+        <div class="
+            option
+            {% if question.correct_answer == 'A' %}
+                correct
+            {% endif %}
+        ">
+
+            A. {{ question.option_a }}
+
+        </div>
+
+
+        <div class="
+            option
+            {% if question.correct_answer == 'B' %}
+                correct
+            {% endif %}
+        ">
+
+            B. {{ question.option_b }}
+
+        </div>
+
+
+        <div class="
+            option
+            {% if question.correct_answer == 'C' %}
+                correct
+            {% endif %}
+        ">
+
+            C. {{ question.option_c }}
+
+        </div>
+
+
+        <div class="
+            option
+            {% if question.correct_answer == 'D' %}
+                correct
+            {% endif %}
+        ">
+
+            D. {{ question.option_d }}
+
+        </div>
+
+
+        <p>
+            <strong>
+                Correct Answer:
+            </strong>
+
+            {{ question.correct_answer }}
+
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+
+    <div class="buttons">
+
+        <a
+            href="{% url 'add_mock_questions' mock_test.id %}"
+            class="btn edit-btn"
+        >
+            ← Edit Questions
+        </a>
+
+
+        <form
+            method="POST"
+            action="{% url 'publish_mock_test' mock_test.id %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn publish-btn"
+            >
+                ✓ Publish Test
+            </button>
+
+        </form>
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Skill Swap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar-brand span {
+            font-weight: normal;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-links .logout {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 20px;
+            border-radius: 6px;
+        }
+
+        .nav-links .logout:hover {
+            background: #e74c3c;
+        }
+
+        .nav-links .active {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .notification-badge {
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 7px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 5px 15px 5px 10px;
+            border-radius: 25px;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .welcome-banner h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .welcome-banner p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .welcome-banner .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .welcome-banner .stat-item {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 20px;
+            border-radius: 8px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 .badge {
+            background: #667eea;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        /* Skills */
+        .skill-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin: 4px;
+        }
+
+        .skill-teach {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .skill-learn {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            background: #e9ecef;
+            color: #495057;
+            margin: 2px;
+        }
+
+        /* User Cards */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .user-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-color: #667eea;
+        }
+
+        .user-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .user-location {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .user-skills {
+            margin: 10px 0;
+            flex: 1;
+        }
+
+        .user-skills .label {
+            font-size: 12px;
+            color: #888;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e9ecef;
+        }
+
+
+
+
+    
+/* Mock Test Section */
+
+.mock-test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.mock-test-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.mock-test-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    border-color: #667eea;
+}
+
+.mock-test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.mock-test-header h4 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.difficulty {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.difficulty-easy {
+    background: #d4edda;
+    color: #155724;
+}
+
+.difficulty-medium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.difficulty-hard {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.mock-test-info {
+    margin: 15px 0;
+}
+
+.mock-test-info p {
+    font-size: 13px;
+    color: #666;
+    margin: 8px 0;
+}
+
+.mock-test-info strong {
+    color: #333;
+}
+
+.mock-description {
+    margin-top: 12px !important;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
+}
+
+.mock-test-action {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.mock-test-action .btn {
+    width: 100%;
+}
+
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        /* Search */
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+        }
+
+        .search-box select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            min-width: 150px;
+        }
+
+        .search-box select:focus {
+            border-color: #667eea;
+        }
+
+        .search-box button {
+            padding: 10px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .search-box button:hover {
+            background: #5a67d8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: #e9ecef;
+            color: #666;
+            cursor: pointer;
+            font-size: 13px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-tab:hover {
+            background: #667eea;
+            color: white;
+        }
+
+
+
+
+
+        /* =========================================
+   CERTIFICATE REQUEST
+========================================= */
+
+.certificate-request-card {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 20px;
+
+    margin-bottom: 15px;
+
+    background: #f8f9fa;
+
+    border: 1px solid #eeeeee;
+
+    border-radius: 12px;
+
+}
+
+
+.certificate-info h3 {
+
+    margin: 0 0 8px;
+
+    color: #333;
+
+}
+
+
+.certificate-info p {
+
+    margin: 5px 0;
+
+    color: #666;
+
+    font-size: 14px;
+
+}
+
+
+.certificate-status {
+
+    text-align: right;
+
+    min-width: 230px;
+
+}
+
+
+.certificate-status p {
+
+    font-size: 13px;
+
+    color: #777;
+
+    margin: 10px 0;
+
+}
+
+
+/* STATUS */
+
+.status {
+
+    display: inline-block;
+
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+.status.pending {
+
+    background: #fff3cd;
+
+    color: #856404;
+
+}
+
+
+.status.approved {
+
+    background: #d4edda;
+
+    color: #155724;
+
+}
+
+
+.status.rejected {
+
+    background: #f8d7da;
+
+    color: #721c24;
+
+}
+
+
+.status.paid {
+
+    background: #d1ecf1;
+
+    color: #0c5460;
+
+}
+
+
+.status.completed {
+
+    background: #d4edda;
+
+    color: #155724;
+
+}
+
+
+/* PAYMENT BUTTON */
+
+.payment-btn {
+
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    background: #f5576c;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    font-size: 14px;
+
+}
+
+
+.payment-btn:hover {
+
+    opacity: 0.9;
+
+}
+
+
+/* CERTIFICATE BUTTON */
+
+.certificate-btn {
+
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    background: #28a745;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    font-size: 14px;
+
+}
+
+
+.empty-state {
+
+    text-align: center;
+
+    padding: 30px;
+
+    color: #888;
+
+}
+
+
+@media (max-width: 768px) {
+
+    .certificate-request-card {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .certificate-status {
+
+        text-align: left;
+
+        min-width: auto;
+
+    }
+
+}
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-banner .stats {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box select {
+                min-width: 100%;
+            }
+
+            .user-badge {
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+    <a href="{% url 'dashboard' %}" class="nav-link">
+        🏠 Dashboard
+    </a>
+
+    <a href="{% url 'view_profile' user.id %}" class="nav-link">
+        👤 Profile
+    </a>
+
+    <a href="{% url 'swap_requests' %}" class="nav-link">
+        🔄 Swap Requests
+        {% if pending_requests_count > 0 %}
+            <span class="notification-badge">
+                {{ pending_requests_count }}
+            </span>
+        {% endif %}
+    </a>
+
+    <a href="{% url 'logout' %}" class="nav-link">
+        🚪 Logout
+    </a>
+
+</nav>
+
+    <div class="container">
+
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <h1>👋 Welcome, {{ user.full_name|default:user.username }}!</h1>
+            <p>Connect, share skills, and grow together with the Skill Swap community.</p>
+            <div class="stats">
+                <div class="stat-item">
+                    📚 Teaching: {{ user.teaches_skills.count }} skills
+                </div>
+                <div class="stat-item">
+                    🎯 Learning: {{ user.learns_skills.count }} skills
+                </div>
+                <div class="stat-item">
+                    👥 Members: {{ total_users }} users
+                </div>
+            </div>
+        </div>
+
+        <!-- My Skills -->
+        <div class="grid">
+
+    <!-- Skills I Teach -->
+
+    <div class="card">
+
+        <h3>
+            📚 Skills I Teach
+            <span class="badge">{{ user_teaches.count }}</span>
+        </h3>
+
+        {% if user_teaches %}
+
+            <div>
+
+                {% for profile_skill in user_teaches %}
+
+                    <span class="skill-tag skill-teach">
+                        {{ profile_skill.skill.name }}
+                    </span>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="icon">📝</div>
+
+                <p>
+                    You haven't added any skills to teach yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Skills I Want to Learn -->
+
+    <div class="card">
+
+        <h3>
+            🎯 Skills I Want to Learn
+            <span class="badge">{{ user_learns.count }}</span>
+        </h3>
+
+        {% if user_learns %}
+
+            <div>
+
+                {% for profile_skill in user_learns %}
+
+                    <span class="skill-tag skill-learn">
+                        {{ profile_skill.skill.name }}
+                    </span>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <div class="icon">🎯</div>
+
+                <p>
+                    You haven't added any skills to learn yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+<!-- Available Mock Tests -->
+<div class="card">
+    <h3>
+        📝 Available Mock Tests
+        <span class="badge">{{ available_mock_tests.count }}</span>
+    </h3>
+
+    {% if available_mock_tests %}
+
+        <div class="mock-test-grid">
+
+            {% for test in available_mock_tests %}
+
+                <div class="mock-test-card">
+
+                    <div class="mock-test-header">
+
+                        <div>
+                            <h4>{{ test.title }}</h4>
+
+                            <span class="difficulty difficulty-{{ test.difficulty }}">
+                                {{ test.get_difficulty_display }}
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="mock-test-info">
+
+                        <p>
+                            📚 Questions:
+                            <strong>{{ test.total_questions }}</strong>
+                        </p>
+
+                        <p>
+                            ⭐ Marks per Question:
+                            <strong>{{ test.marks_per_question }}</strong>
+                        </p>
+
+                        <p>
+                            🎯 Passing Score:
+                            <strong>{{ test.passing_score }}%</strong>
+                        </p>
+
+                        {% if test.description %}
+                            <p class="mock-description">
+                                {{ test.description }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="mock-test-action">
+
+                        <a href="{% url 'attempt_mock_test' test.id %}"
+                           class="btn btn-primary">
+
+                            🚀 Attempt Mock Test
+
+                        </a>
+                        <a href="{% url 'view_test_results' test.id %}"
+       class="btn btn-outline"
+       style="width: 100%; margin-top: 10px;">
+
+        📊 View Results
+
+    </a>
+
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div class="icon">📝</div>
+
+            <p>
+                No mock tests are available at the moment.
+            </p>
+
+        </div>
+
+    {% endif %}
+</div>
+
+<!-- ========================================= -->
+<!-- CERTIFICATE REQUESTS -->
+<!-- ========================================= -->
+
+<div class="dashboard-card">
+
+    <div class="card-header">
+
+        <h2>🏆 My Certificates</h2>
+
+    </div>
+
+
+    {% if certificate_requests %}
+
+        {% for certificate_request in certificate_requests %}
+
+            <div class="certificate-request-card">
+
+                <!-- Test Information -->
+
+                <div class="certificate-info">
+
+                    <h3>
+                        {{ certificate_request.test.title }}
+                    </h3>
+
+                    <p>
+                        Tutor:
+                        {{ certificate_request.tutor.full_name|default:certificate_request.tutor.username }}
+                    </p>
+
+                    <p>
+                        Score:
+                        {{ certificate_request.attempt.score }}
+                    </p>
+
+                    <p>
+                        Requested:
+                        {{ certificate_request.requested_at|date:"d M Y" }}
+                    </p>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="certificate-status">
+
+
+                    {% if certificate_request.status == "pending" %}
+
+                        <span class="status pending">
+
+                            ⏳ Waiting for Tutor Approval
+
+                        </span>
+
+
+                    {% elif certificate_request.status == "approved" %}
+
+                        <span class="status approved">
+
+                            ✅ Approved by Tutor
+
+                        </span>
+
+                        <p>
+                            Your certificate request has been
+                            approved by the tutor.
+                        </p>
+
+                    <a
+                       href="{% url 'certificate_payment' certificate_request.id %}"
+                       class="payment-btn">
+                       💳 Pay ₹199
+                    </a>
+
+
+                    {% elif certificate_request.status == "rejected" %}
+
+                        <span class="status rejected">
+
+                            ❌ Request Rejected
+
+                        </span>
+
+
+                    {% elif certificate_request.status == "paid" %}
+
+                        <span class="status paid">
+
+                            💳 Payment Completed
+
+                        </span>
+
+                        <p>
+                            Payment successful.
+                            Your certificate is being generated.
+                        </p>
+
+
+                    {% elif certificate_request.status == "completed" %}
+
+                        <span class="status completed">
+
+                            🏆 Certificate Issued
+
+                        </span>
+
+                        <br><br>
+
+                        <a
+                            href="{% url 'view_certificate' certificate_request.id %}"
+                            class="certificate-btn"
+                        >
+                            🏆 View Certificate
+                        </a>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <p>
+                You don't have any certificate requests yet.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+        <!-- Find People -->
+        <div class="card">
+            <h3>🔍 Find People to Connect</h3>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Search by name, skill, or location..." id="searchInput">
+                <select id="skillFilter">
+                    <option value="">All Skills</option>
+                    {% for skill in all_skills %}
+                        <option value="{{ skill.name }}">{{ skill.name }}</option>
+                    {% endfor %}
+                </select>
+                <select id="filterType">
+                    <option value="all">All Users</option>
+                    <option value="teach">Can Teach Me</option>
+                    <option value="learn">Want to Learn My Skills</option>
+                    <option value="match">Best Match</option>
+                </select>
+                <button onclick="searchUsers()">Search</button>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterUsers('all')">All</button>
+                <button class="filter-tab" onclick="filterUsers('teach')">Can Teach Me</button>
+                <button class="filter-tab" onclick="filterUsers('learn')">Want to Learn</button>
+                <button class="filter-tab" onclick="filterUsers('match')">Best Match</button>
+            </div>
+
+           <div id="searchResults" class="user-grid">
+
+    {% if other_users %}
+
+        {% for other in other_users %}
+
+            <div class="user-card"
+                 data-teaches="{% for s in other.teaches_skills %}{{ s.skill.name }},{% endfor %}"
+                 data-learns="{% for s in other.learns_skills %}{{ s.skill.name }},{% endfor %}">
+
+                <!-- User Header -->
+                <div class="user-card-header">
+
+                    <div class="user-avatar">
+                        {{ other.full_name|slice:":1"|upper|default:other.username|slice:":1"|upper }}
+                    </div>
+
+                    <div>
+                        <div class="user-name">
+                            {{ other.full_name|default:other.username }}
+                        </div>
+
+                        <div class="user-location">
+                            📍 {{ other.location|default:"Location not set" }}
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- User Skills -->
+                <div class="user-skills">
+
+                    <!-- Skills they teach -->
+                    <span class="label">📚 Teaches:</span>
+
+                    {% for profile_skill in other.teaches_skills %}
+
+                        <span class="skill-tag skill-teach">
+                            {{ profile_skill.skill.name }}
+                        </span>
+
+                    {% empty %}
+
+                        <span style="color: #999; font-size: 12px;">
+                            No skills listed
+                        </span>
+
+                    {% endfor %}
+
+
+                    <!-- Skills they want to learn -->
+                    <span class="label" style="margin-top: 10px;">
+                        🎯 Wants to Learn:
+                    </span>
+
+                    {% for profile_skill in other.learns_skills %}
+
+                        <span class="skill-tag skill-learn">
+                            {{ profile_skill.skill.name }}
+                        </span>
+
+                    {% empty %}
+
+                        <span style="color: #999; font-size: 12px;">
+                            No skills listed
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="user-actions">
+
+                    <a href="{% url 'view_profile' other.id %}"
+                       class="btn btn-primary btn-sm">
+                        View Profile
+                    </a>
+
+
+                    <!-- Match -->
+                    {% for learn_skill in user_learns %}
+
+                        {% for teach_skill in other.teaches_skills %}
+
+                            {% if learn_skill.skill.id == teach_skill.skill.id %}
+
+                                <span class="btn btn-success btn-sm"
+                                      style="cursor: default;">
+                                    ⭐ Match!
+                                </span>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-state" style="grid-column: 1 / -1;">
+
+            <div class="icon">👥</div>
+
+            <p>
+                No other users found. Invite friends to join!
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+    <script>
+        // Search and Filter Functions
+        function searchUsers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const skillFilter = document.getElementById('skillFilter').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value;
+            
+            const cards = document.querySelectorAll('.user-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const teaches = card.dataset.teaches.toLowerCase();
+                const learns = card.dataset.learns.toLowerCase();
+                
+                let show = true;
+                
+                // Search term filter
+                if (searchTerm && !text.includes(searchTerm)) {
+                    show = false;
+                }
+                
+                // Skill filter
+                if (skillFilter && !teaches.includes(skillFilter) && !learns.includes(skillFilter)) {
+                    show = false;
+                }
+                
+                // Type filter
+                if (filterType === 'teach' && !teaches.includes(skillFilter || '')) {
+                    show = false;
+                }
+                if (filterType === 'learn' && !learns.includes(skillFilter || '')) {
+                    show = false;
+                }
+                
+                card.style.display = show ? 'flex' : 'none';
+            });
+        }
+
+        function filterUsers(type) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update filter dropdown
+            document.getElementById('filterType').value = type;
+            searchUsers();
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') searchUsers();
+        });
+
+        document.getElementById('skillFilter').addEventListener('change', searchUsers);
+        document.getElementById('filterType').addEventListener('change', searchUsers);
+    </script>
+
+</body>
+</html>

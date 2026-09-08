@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Mock Test Result</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .result-card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 45px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .details {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .details p {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .passed {
+            color: #198754;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .failed {
+            color: #dc3545;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .stat {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .stat h3 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .correct {
+            color: #198754;
+        }
+
+        .wrong {
+            color: #dc3545;
+        }
+
+        .unanswered {
+            color: #6c757d;
+        }
+
+        .question-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            text-align: left;
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .answer {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+
+        .correct-answer {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .wrong-answer {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .right-answer {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background: #5568d9;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- RESULT SUMMARY -->
+
+    <div class="result-card">
+
+        <h1>{{ mock_test.title }}</h1>
+
+        <h2>Test Result</h2>
+
+        <div class="score">
+            {{ score }} / {{ total_marks }}
+        </div>
+
+        <div class="details">
+
+            <p>
+                <strong>Student:</strong>
+                {{ user.full_name }}
+            </p>
+
+            <p>
+                <strong>Score:</strong>
+                {{ score }}
+            </p>
+
+            <p>
+                <strong>Total Marks:</strong>
+                {{ total_marks }}
+            </p>
+
+            <p>
+                <strong>Percentage:</strong>
+                {{ percentage|floatformat:2 }}%
+            </p>
+
+            <p>
+                <strong>Passing Score:</strong>
+                {{ mock_test.passing_score }}%
+            </p>
+
+        </div>
+
+
+        <!-- QUESTION STATISTICS -->
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <h3 class="correct">
+                    {{ correct_count }}
+                </h3>
+
+                <p>Correct</p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <h3 class="wrong">
+                    {{ wrong_count }}
+                </h3>
+
+                <p>Wrong</p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <h3 class="unanswered">
+                    {{ unanswered_count }}
+                </h3>
+
+                <p>Unanswered</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- PASS / FAIL -->
+
+        {% if passed %}
+
+            <div class="passed">
+                🎉 Congratulations! You Passed!
+            </div>
+
+            <p>
+                You have successfully completed the mock test.
+            </p>
+
+        {% else %}
+
+            <div class="failed">
+                ❌ Test Not Passed
+            </div>
+
+            <p>
+                Don't worry. Keep practicing and try again!
+            </p>
+
+        {% endif %}
+
+
+        <a href="{% url 'dashboard' %}" class="btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- ANSWER REVIEW -->
+
+    <h2>Answer Review</h2>
+
+
+    {% for result in results %}
+
+        <div class="question-card">
+
+            <div class="question">
+
+                {{ forloop.counter }}.
+                {{ result.question }}
+
+            </div>
+
+
+            {% if result.is_correct %}
+
+                <div class="answer correct-answer">
+
+                    ✅ <strong>Your Answer:</strong>
+
+                    {{ result.user_answer }}
+
+                </div>
+
+            {% else %}
+
+                {% if result.user_answer %}
+
+                    <div class="answer wrong-answer">
+
+                        ❌ <strong>Your Answer:</strong>
+
+                        {{ result.user_answer }}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="answer wrong-answer">
+
+                        ❌ <strong>Your Answer:</strong>
+
+                        Not Answered
+
+                    </div>
+
+                {% endif %}
+
+
+                <div class="answer right-answer">
+
+                    ✅ <strong>Correct Answer:</strong>
+
+                    {{ result.correct_answer }}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+
+</div>
+
+</body>
+
+</html>
+

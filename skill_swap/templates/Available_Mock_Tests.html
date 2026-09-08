@@ -1,0 +1,73 @@
+<div class="card">
+
+    <h3>
+        📝 Available Mock Tests
+    </h3>
+
+    <div class="user-grid">
+
+        {% for test in available_mock_tests %}
+
+        <div class="user-card">
+
+            <h3>
+                {{ test.title }}
+            </h3>
+
+            <p>
+                📚 Skill:
+                {{ test.skill.name }}
+            </p>
+
+            <p>
+                🎯 Difficulty:
+                {{ test.get_difficulty_display }}
+            </p>
+
+            <p>
+                ❓ Questions:
+                {{ test.total_questions }}
+            </p>
+
+            <p>
+                ⏱ Duration:
+                {{ test.duration_minutes }} minutes
+            </p>
+
+            <p>
+                🏆 Passing Score:
+                {{ test.passing_score }}%
+            </p>
+
+            <div class="user-actions">
+
+                <a
+                    href="{% url 'attempt_mock_test' test.id %}"
+                    class="btn btn-primary"
+                >
+                    📝 Attempt Mock Test
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-state">
+
+            <div class="icon">
+                📝
+            </div>
+
+            <p>
+                No mock tests are currently available.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

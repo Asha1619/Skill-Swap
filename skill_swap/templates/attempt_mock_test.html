@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Attempt Mock Test</title>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fb;
+        margin: 0;
+        padding: 30px;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .test-header {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .question-card {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .question {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .option {
+        display: block;
+        padding: 10px;
+        margin: 8px 0;
+        background: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .option:hover {
+        background: #e9ecef;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        background: #667eea;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background: #5568d9;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<div class="test-header">
+
+    <h1>{{ mock_test.title }}</h1>
+
+    {% if mock_test.description %}
+        <p>{{ mock_test.description }}</p>
+    {% endif %}
+
+    <p>
+        <strong>Questions:</strong>
+        {{ mock_test.total_questions }}
+    </p>
+
+    <p>
+        <strong>Marks per Question:</strong>
+        {{ mock_test.marks_per_question }}
+    </p>
+
+    <p>
+        <strong>Passing Score:</strong>
+        {{ mock_test.passing_score }}%
+    </p>
+
+</div>
+
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    {% for question in mock_test.questions %}
+
+        <div class="question-card">
+
+            <div class="question">
+                {{ forloop.counter }}.
+                {{ question.question }}
+            </div>
+
+
+            <!-- Option A -->
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ forloop.counter0 }}"
+                    value="option_a"
+                    required
+                >
+
+                {{ question.option_a }}
+
+            </label>
+
+
+            <!-- Option B -->
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ forloop.counter0 }}"
+                    value="option_b"
+                >
+
+                {{ question.option_b }}
+
+            </label>
+
+
+            <!-- Option C -->
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ forloop.counter0 }}"
+                    value="option_c"
+                >
+
+                {{ question.option_c }}
+
+            </label>
+
+
+            <!-- Option D -->
+            <label class="option">
+
+                <input
+                    type="radio"
+                    name="question_{{ forloop.counter0 }}"
+                    value="option_d"
+                >
+
+                {{ question.option_d }}
+
+            </label>
+
+        </div>
+
+    {% endfor %}
+
+
+    <button type="submit" class="submit-btn">
+        Submit Test
+    </button>
+
+</form>
+
+
+</div>
+
+</body>
+</html>

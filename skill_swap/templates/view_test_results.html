@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Test Results</title>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fb;
+        padding: 30px;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    /* Header */
+
+    .header {
+        background: linear-gradient(
+            135deg,
+            #667eea 0%,
+            #764ba2 100%
+        );
+
+        color: white;
+
+        padding: 30px;
+
+        border-radius: 12px;
+
+        margin-bottom: 25px;
+    }
+
+    .header h1 {
+        margin-bottom: 10px;
+    }
+
+    .header p {
+        opacity: 0.9;
+    }
+
+    /* Attempt Card */
+
+    .attempt-card {
+        background: white;
+
+        padding: 25px;
+
+        margin-bottom: 20px;
+
+        border-radius: 12px;
+
+        box-shadow:
+            0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    /* Attempt Header */
+
+    .attempt-header {
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 20px;
+    }
+
+    .attempt-title {
+        font-size: 20px;
+
+        font-weight: bold;
+
+        color: #333;
+    }
+
+    /* Status */
+
+    .status {
+        padding: 6px 14px;
+
+        border-radius: 20px;
+
+        font-size: 13px;
+
+        font-weight: bold;
+    }
+
+    .status.passed {
+        background: #d4edda;
+
+        color: #155724;
+    }
+
+    .status.failed {
+        background: #f8d7da;
+
+        color: #721c24;
+    }
+
+    /* Result Grid */
+
+    .result-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 15px;
+    }
+
+    .result-box {
+        background: #f8f9fa;
+
+        padding: 15px;
+
+        border-radius: 8px;
+
+        text-align: center;
+    }
+
+    .result-label {
+        color: #777;
+
+        font-size: 13px;
+
+        margin-bottom: 8px;
+    }
+
+    .result-value {
+        color: #333;
+
+        font-size: 20px;
+
+        font-weight: bold;
+    }
+
+    /* Attempt Date */
+
+    .attempt-date {
+        margin-top: 20px;
+
+        padding-top: 15px;
+
+        border-top:
+            1px solid #eee;
+
+        color: #777;
+
+        font-size: 14px;
+    }
+
+    /* Certificate */
+
+    .certificate-section {
+        margin-top: 20px;
+
+        padding-top: 20px;
+
+        border-top:
+            1px solid #eee;
+
+        text-align: center;
+    }
+
+    .certificate-btn {
+        display: inline-block;
+
+        padding: 12px 22px;
+
+        background: #28a745;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 8px;
+
+        font-weight: bold;
+    }
+
+    .certificate-btn:hover {
+        background: #218838;
+    }
+
+    .certificate-status {
+        display: inline-block;
+
+        padding: 12px 20px;
+
+        background: #fff3cd;
+
+        color: #856404;
+
+        border-radius: 8px;
+
+        font-weight: bold;
+    }
+
+    .certificate-status small {
+        display: inline-block;
+
+        margin-top: 5px;
+
+        font-weight: normal;
+    }
+
+    /* Empty State */
+
+    .empty-state {
+        background: white;
+
+        padding: 50px;
+
+        text-align: center;
+
+        border-radius: 12px;
+
+        box-shadow:
+            0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .empty-state .icon {
+        font-size: 50px;
+
+        margin-bottom: 15px;
+    }
+
+    .empty-state h2 {
+        margin-bottom: 10px;
+
+        color: #333;
+    }
+
+    .empty-state p {
+        color: #777;
+    }
+
+    /* Back Button */
+
+    .back-btn {
+        display: inline-block;
+
+        margin-top: 20px;
+
+        padding: 10px 18px;
+
+        background: #667eea;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 8px;
+    }
+
+    .back-btn:hover {
+        background: #5568d9;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 700px) {
+
+        .result-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .attempt-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 10px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <h1>
+            📊 {{ mock_test.title }}
+        </h1>
+
+        <p>
+            Your previous attempts and results
+        </p>
+
+    </div>
+
+
+    {% if attempts %}
+
+
+        {% for attempt in attempts %}
+
+
+            <!-- Attempt Card -->
+
+            <div class="attempt-card">
+
+
+                <!-- Attempt Header -->
+
+                <div class="attempt-header">
+
+                    <div class="attempt-title">
+
+                        Attempt {{ forloop.counter }}
+
+                    </div>
+
+
+                    {% if attempt.passed %}
+
+                        <span class="status passed">
+
+                            ✅ Passed
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="status failed">
+
+                            ❌ Failed
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Result Grid -->
+
+                <div class="result-grid">
+
+
+                    <!-- Score -->
+
+                    <div class="result-box">
+
+                        <div class="result-label">
+
+                            Score
+
+                        </div>
+
+                        <div class="result-value">
+
+                            {{ attempt.score }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Total Marks -->
+
+                    <div class="result-box">
+
+                        <div class="result-label">
+
+                            Total Marks
+
+                        </div>
+
+                        <div class="result-value">
+
+                            {{ total_marks }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Percentage -->
+
+                    <div class="result-box">
+
+                        <div class="result-label">
+
+                            Result
+
+                        </div>
+
+                        <div class="result-value">
+
+                            {{ attempt.percentage }}%
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Attempt Number -->
+
+                    <div class="result-box">
+
+                        <div class="result-label">
+
+                            Attempt
+
+                        </div>
+
+                        <div class="result-value">
+
+                            {{ forloop.counter }}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Attempt Date -->
+
+                <div class="attempt-date">
+
+                    🕒 Attempted on:
+
+                    {{ attempt.attempted_at|date:"d M Y, h:i A" }}
+
+                </div>
+
+
+                <!-- Certificate Request -->
+
+                {% if forloop.first and attempt.passed %}
+
+
+                    <div class="certificate-section">
+
+
+                        {% if certificate_requested %}
+
+
+                            <!-- Already Requested -->
+
+                            <div class="certificate-status">
+
+                                🏆 Certificate Requested
+
+                                <br>
+
+                                <small>
+                                    Your certificate request is pending.
+                                </small>
+
+                            </div>
+
+
+                        {% else %}
+
+
+                            <!-- Request Certificate -->
+
+                            <a
+                                href="{% url 'request_certificate' mock_test.id %}"
+                                class="certificate-btn"
+                            >
+
+                                🏆 Request Certificate
+
+                            </a>
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <!-- No Attempts -->
+
+        <div class="empty-state">
+
+
+            <div class="icon">
+
+                📝
+
+            </div>
+
+
+            <h2>
+
+                No Attempts Yet
+
+            </h2>
+
+
+            <p>
+
+                You haven't attempted this mock test yet.
+
+            </p>
+
+
+            <a
+                href="{% url 'attempt_mock_test' mock_test.id %}"
+                class="back-btn"
+            >
+
+                🚀 Attempt Test
+
+            </a>
+
+
+        </div>
+
+
+    {% endif %}
+
+
+    <!-- Back to Dashboard -->
+
+    <a
+        href="{% url 'dashboard' %}"
+        class="back-btn"
+    >
+
+        ← Back to Dashboard
+
+    </a>
+
+
+</div>
+
+
+</body>
+
+</html>

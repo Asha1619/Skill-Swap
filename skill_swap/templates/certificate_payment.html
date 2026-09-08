@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Certificate Payment</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .payment-box {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+
+        .details p {
+            margin: 12px 0;
+            color: #555;
+        }
+
+        .details strong {
+            color: #222;
+        }
+
+        .amount {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .info {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #e6455b;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #555;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="payment-box">
+
+    <h1>🏆 Certificate Payment</h1>
+
+
+    <div class="details">
+
+        <p>
+            <strong>Test:</strong>
+            {{ certificate_request.test.title }}
+        </p>
+
+        <p>
+            <strong>Tutor:</strong>
+            {{ certificate_request.tutor.full_name|default:certificate_request.tutor.username }}
+        </p>
+
+        <p>
+            <strong>Student:</strong>
+            {{ student.full_name|default:student.username }}
+        </p>
+
+    </div>
+
+
+    <div class="info">
+
+        ✅ Your certificate request has been approved by the tutor.
+
+        <br>
+
+        Complete the payment to generate your certificate.
+
+    </div>
+
+
+    <div class="amount">
+
+        ₹{{ amount_rupees }}
+
+    </div>
+
+
+    <!-- Razorpay Payment Button -->
+
+    <button
+        type="button"
+        id="rzp-button"
+        class="btn"
+    >
+        💳 Pay ₹{{ amount_rupees }}
+    </button>
+
+
+    <a
+        href="{% url 'dashboard' %}"
+        class="back-btn"
+    >
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+
+<!-- Razorpay Checkout Script -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+
+    var options = {
+
+        /*
+         * Razorpay Key ID
+         *
+         * This is safe to send to the browser.
+         * NEVER put the Key Secret here.
+         */
+
+        "key": "{{ razorpay_key }}",
+
+
+        /*
+         * Amount is in paise.
+         *
+         * Example:
+         * ₹199 = 19900 paise
+         */
+
+        "amount": "{{ amount }}",
+
+
+        "currency": "INR",
+
+
+        "name": "Skill Swap",
+
+
+        "description":
+            "Certificate - {{ certificate_request.test.title|escapejs }}",
+
+
+        /*
+         * Razorpay Order ID
+         *
+         * This was created by your Django view.
+         */
+
+        "order_id":
+            "{{ razorpay_order_id }}",
+
+
+        /*
+         * Student information
+         */
+
+        "prefill": {
+
+            "name":
+                "{{ student.full_name|default:student.username|escapejs }}",
+
+            "email":
+                "{{ student.email|escapejs }}"
+
+        },
+
+
+        /*
+         * Payment successful
+         */
+
+        "handler": function (response) {
+
+
+            /*
+             * Create a form dynamically
+             * and send the Razorpay response
+             * to Django.
+             */
+
+            var form =
+                document.createElement("form");
+
+
+            form.method = "POST";
+
+
+            form.action =
+                "{% url 'process_certificate_payment' certificate_request.id %}";
+
+
+            /*
+             * CSRF TOKEN
+             */
+
+            var csrf =
+                document.createElement("input");
+
+
+            csrf.type = "hidden";
+
+
+            csrf.name =
+                "csrfmiddlewaretoken";
+
+
+            csrf.value =
+                "{{ csrf_token }}";
+
+
+            form.appendChild(csrf);
+
+
+            /*
+             * RAZORPAY PAYMENT ID
+             */
+
+            var payment =
+                document.createElement("input");
+
+
+            payment.type = "hidden";
+
+
+            payment.name =
+                "razorpay_payment_id";
+
+
+            payment.value =
+                response.razorpay_payment_id;
+
+
+            form.appendChild(payment);
+
+
+            /*
+             * RAZORPAY ORDER ID
+             */
+
+            var order =
+                document.createElement("input");
+
+
+            order.type = "hidden";
+
+
+            order.name =
+                "razorpay_order_id";
+
+
+            order.value =
+                response.razorpay_order_id;
+
+
+            form.appendChild(order);
+
+
+            /*
+             * RAZORPAY SIGNATURE
+             */
+
+            var signature =
+                document.createElement("input");
+
+
+            signature.type = "hidden";
+
+
+            signature.name =
+                "razorpay_signature";
+
+
+            signature.value =
+                response.razorpay_signature;
+
+
+            form.appendChild(signature);
+
+
+            /*
+             * Add form to page
+             */
+
+            document.body.appendChild(form);
+
+
+            /*
+             * Submit payment details
+             * to Django backend.
+             */
+
+            form.submit();
+
+        }
+
+    };
+
+
+    /*
+     * Create Razorpay object
+     */
+
+    var razorpay =
+        new Razorpay(options);
+
+
+    /*
+     * Open Razorpay Checkout
+     * when user clicks Pay button.
+     */
+
+    document.getElementById("rzp-button").onclick =
+        function (e) {
+
+            e.preventDefault();
+
+            razorpay.open();
+
+        };
+
+
+</script>
+
+
+</body>
+
+</html>

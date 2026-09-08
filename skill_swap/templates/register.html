@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Choose Account Type - Skill Swap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .logo span {
+            color: #667eea;
+        }
+
+        .tagline {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .container h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .container .sub-text {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 25px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .option-btn .icon {
+            font-size: 32px;
+            width: 50px;
+            height: 50px;
+            background: #f0f3ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option-btn .content {
+            flex: 1;
+        }
+
+        .option-btn .content .title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .option-btn .content .desc {
+            font-size: 13px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .option-btn .badge {
+            background: #667eea;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .option-btn .arrow {
+            font-size: 18px;
+            color: #ccc;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover .arrow {
+            color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .login-link {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+            color: #764ba2;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .option-btn {
+                padding: 15px 20px;
+                gap: 15px;
+            }
+
+            .option-btn .icon {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+            }
+
+            .option-btn .content .title {
+                font-size: 16px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="logo">
+            Skill <span>Swap</span>
+        </div>
+        <p class="tagline">Learn. Share. Grow.</p>
+
+        <h2>Create Account</h2>
+        <p class="sub-text">Choose your role in the community</p>
+
+        <div class="options">
+            <!-- User Option -->
+            <a href="{% url 'user_register' %}" class="option-btn">
+                <div class="icon">👤</div>
+                <div class="content">
+                    <div class="title">User</div>
+                    <div class="desc">Learn skills, connect with tutors, and grow</div>
+                </div>
+                <span class="badge">Free</span>
+                <span class="arrow">→</span>
+            </a>
+
+            <!-- Tutor Option -->
+            <a href="{% url 'tutor_register' %}" class="option-btn">
+                <div class="icon">🎓</div>
+                <div class="content">
+                    <div class="title">Tutor</div>
+                    <div class="desc">Teach skills, create tests, and issue certificates</div>
+                </div>
+                <span class="badge">Premium</span>
+                <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <div class="login-link">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
