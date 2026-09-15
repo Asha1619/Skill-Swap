@@ -88,14 +88,17 @@ WSGI_APPLICATION = 'skill_swap.wsgi.application'
 
 
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'Ekart db',
-        'USER':'postgres',
-        'PASSWORD':'asha',
-        'HOST': 'localhost',
-        'PORT':'5432',
+        'NAME': os.environ.get('DATABASE'),
+        'USER': os.environ.get('USERNAME'),
+        'PASSWORD': os.environ.get('PASSWORD'),
+        'HOST': os.environ.get('HOST'),
+        'PORT': os.environ.get('PORT'),
+
     }
 }
 
