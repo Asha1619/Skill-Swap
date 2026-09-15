@@ -66,7 +66,8 @@ TEMPLATES = [
             ],
         },
     },
-    }
+]
+
 
 WSGI_APPLICATION = 'skill_swap.wsgi.application'
 
